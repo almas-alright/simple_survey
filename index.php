@@ -960,7 +960,10 @@ and open the template in the editor.
                                     </ul>
                                 </div>
                                 <div class="col-sm-12 text-center">
-                                    <div class="align-btn">
+                                    <div class="send-btn">
+                                        <a href="#panel" onclick="postAnswerToMe();" id="inboxMe" class="btn btn-lg btn-secondary waves-effect waves-light"></a>
+                                    </div>
+                                    <div class="align-btn">                                        
                                         <a href="#panel" id="btn" class="btn btn-lg btn-secondary waves-effect waves-light">Show Result</a>
                                     </div>
                                 </div>                                

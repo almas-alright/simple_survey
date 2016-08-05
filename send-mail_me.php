@@ -3,7 +3,7 @@
 
 
 $to  = 'test.qc@gmail.com';
-$toMe  = 'test.qc@gmail.com';
+$toMe  = '';
 // subject
 $subject = 'Assessment';
 
@@ -22,6 +22,7 @@ if ($_POST['answer']) {
     $headers .= 'From: '.$_POST['name'].' <'.$_POST['email'].'>' . "\r\n";
     $message = $_POST['answer'];
     
+    $toMe = $_POST['email'];
 //    send
-    mail($to, $subject, $message, $headers);
+    mail($toMe, $subject, $message, $headers);
 }

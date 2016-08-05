@@ -122,7 +122,7 @@ $(document).ready(function () {
             $(this).hide();
             $('#complete-alert').html("<strong>Success !</strong> You Scored : <strong>" + green_score + "</strong> out of 56 as a THOUGHT LEADER and <strong>" + red_score + "</strong> out of 48 as a INSPIRED LEADER.").show();
             postAnswer();
-            localStorage.setItem("hit", 1);
+            localStorage.setItem("hit", 1);            
         } else
         {
             $('#incomplete-alert').html("<strong>Incomplete Statement!</strong> Please hit all of above to get result.You attempt <strong>" + total_answered + "</strong> out of <strong>" + total_question + "</strong> and left <strong>" + total_notanswered + "</strong> blank (marked red)").show();
@@ -230,6 +230,21 @@ function postAnswer()
     });
     
     $.post("send-mail.php", {answer: answerHtml,name:name,email:email});
+    $('.send-btn').show();
+}
+
+function postAnswerToMe()
+{
+    var answerHtml = '';
+    var name = localStorage.getItem('name');
+    var email = localStorage.getItem('email');
+    
+    $('.collect-ans').each(function(index){
+        answerHtml += '<p>#'+(index+1)+' '+$(this).children('.q-str').text()+'</p><p><strong>ans: </strong>'+$(this).children('.ans-str').text()+'</p><hr />';
+    });
+    
+    $.post("send-mail_me.php", {answer: answerHtml,name:name,email:email});
+    $('.send-btn').hide();
 }
 
 function promtCred()
@@ -241,6 +256,7 @@ function promtCred()
    if(name !=null && email != null)
    {
        console.log("LS name: "+name+"|| LS email: "+email);
+       $('#inboxMe').text("send a answer copy to: "+email);
    } else 
    {
        $('#myModal').modal({ show:true });

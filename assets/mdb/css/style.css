@@ -65,7 +65,7 @@ footer.footer {
     display: block;
     height: auto;
 }
-#incomplete-alert,#result_container,#complete-alert,.align-btn,.ans-str,#removeCr
+#incomplete-alert,#result_container,#complete-alert,.align-btn,.ans-str,#removeCr,.send-btn
 {
     display: none;
 }
