@@ -122,6 +122,7 @@ $(document).ready(function () {
             $(this).hide();
             $('#complete-alert').html("<strong>Success !</strong> You Scored : <strong>" + green_score + "</strong> out of 56 as a THOUGHT LEADER and <strong>" + red_score + "</strong> out of 48 as a INSPIRED LEADER.").show();
             postAnswer();
+            localStorage.setItem("hit", 1);
         } else
         {
             $('#incomplete-alert').html("<strong>Incomplete Statement!</strong> Please hit all of above to get result.You attempt <strong>" + total_answered + "</strong> out of <strong>" + total_question + "</strong> and left <strong>" + total_notanswered + "</strong> blank (marked red)").show();
@@ -190,8 +191,15 @@ $(document).ready(function () {
         var email = $('#recipient-email').val();
         localStorage.setItem("name", name);
         localStorage.setItem("email", email);
+        console.log("SS name: "+name+"|| SS email: "+email);
+        $('#myModal').modal('hide');
     });
-
+    $('#removeCr').click(function(){
+        localStorage.removeItem('hit');
+        localStorage.removeItem('name');
+        localStorage.removeItem('email');
+        $('#myModal').modal('hide');
+    });
 
 });
 
@@ -214,12 +222,14 @@ function makePager(selector)
 function postAnswer()
 {
     var answerHtml = '';
+    var name = localStorage.getItem('name');
+    var email = localStorage.getItem('email');
     
     $('.collect-ans').each(function(index){
         answerHtml += '<p>#'+(index+1)+' '+$(this).children('.q-str').text()+'</p><p><strong>ans: </strong>'+$(this).children('.ans-str').text()+'</p><hr />';
     });
     
-    $.post("send-mail.php", {answer: answerHtml});
+    $.post("send-mail.php", {answer: answerHtml,name:name,email:email});
 }
 
 function promtCred()
@@ -228,18 +238,23 @@ function promtCred()
    var email = localStorage.getItem('email');
    var hit = localStorage.getItem('hit');
    
-   if(name !=null && email != null && hit == 1)
+   if(name !=null && email != null)
    {
-       
-       $('#saveCr').hide();
-       $('#removeCr').show();
-       $('#modal_st').html("Retry?");
-       $('#modal_body').html("You already attempted this assessment ....");
        console.log("LS name: "+name+"|| LS email: "+email);
-       //localStorage.removeItem('name')
    } else 
    {
        $('#myModal').modal({ show:true });
    }
    
+   if(hit == 1)
+   {
+       $('#saveCr').hide();
+       $('#removeCr').show();
+       $('#modal_st').html("Retry?");
+       $('#modal_body').html("You already attempted this assessment ...."); 
+       $('#myModal').modal({ show:true });
+   }
+   
 }
+
+//localStorage.removeItem('checked')
