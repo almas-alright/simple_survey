@@ -1,4 +1,9 @@
 $(document).ready(function () {
+    
+    promtCred();
+    
+    
+    
     var red_total = 0;
     var red_yes = 0;
     var red_no = 0;
@@ -53,10 +58,18 @@ $(document).ready(function () {
             $(this).parents('.list-group-item').removeClass('error_txt');
         }
         $(this).parents('.list-group-item').addClass('ans');
+        var Rval = $(this).val();
+        if (Rval == 1)
+        {
+            $(this).parents('.form-inline').prev('.collect-ans').children('p.ans-str').html('ans: yes');
+        } else
+        {
+            $(this).parents('.form-inline').prev('.collect-ans').children('p.ans-str').html('ans: no');
+        }
     });
 
     $("#btn").on('click', function () {
-        
+
         green_total = parseInt($('.green-q').length);
         red_total = parseInt($('.red-q').length);
         total_question = parseInt(green_total + red_total);
@@ -76,31 +89,31 @@ $(document).ready(function () {
         if (total_notanswered == 0 && total_answered == 50) {
 //                   green 26-35  red 24-31 || Low-range Thought Leader and Low-range Inspired Leader 
             if ((green_score > 25 && green_score < 36) && (red_score > 23 && red_score < 32)) {
-                $('#result').load("http://devel4/insoired/assets/text/tl26_35_il24_31.txt");
+                $('#result').load("assets/text/tl26_35_il24_31.txt");
             }
 //                   green 36-46  red 32-40 || Mid-range Thought Leader and Mid-range Inspired Leader
             if ((green_score > 35 && green_score < 47) && (red_score > 31 && red_score < 41)) {
-                $('#result').load("http://devel4/insoired/assets/text/tl36_46_il32_40.txt");
+                $('#result').load("assets/text/tl36_46_il32_40.txt");
             }
 //                   green 47-56  red 24-31 || High-Range Thought Leader and Low-Range Inspired Leader
             if ((green_score > 46 && green_score < 57) && (red_score > 23 && red_score < 32)) {
-                $('#result').load("http://devel4/insoired/assets/text/tl47_56_il24_31.txt");
+                $('#result').load("assets/text/tl47_56_il24_31.txt");
             }
 //                   green 47-56  red 32-40 || High-Range Thought Leader and Mid-Range Inspired Leader
             if ((green_score > 46 && green_score < 57) && (red_score > 31 && red_score < 41)) {
-                $('#result').load("http://devel4/insoired/assets/text/tl47_56_il32_40.txt");
+                $('#result').load("assets/text/tl47_56_il32_40.txt");
             }
 //                   green 26-35  red 41-48 || High Inspired Leader and Low Range Thought Leader:
             if ((green_score > 25 && green_score < 36) && (red_score > 40 && red_score < 49)) {
-                $('#result').load("http://devel4/insoired/assets/text/tl26_35_il41_48.txt");
+                $('#result').load("assets/text/tl26_35_il41_48.txt");
             }
 //                   green 36-46  red 41-48 || High Inspired Leader and Mid-Range Thought Leader:
             if ((green_score > 35 && green_score < 47) && (red_score > 40 && red_score < 49)) {
-                $('#result').load("http://devel4/insoired/assets/text/tl36_46_il41_48.txt");
+                $('#result').load("assets/text/tl36_46_il41_48.txt");
             }
 //                   green 47-56  red 41-48 || High Inspired Leader and High Thought Leader:
             if ((green_score > 46 && green_score < 57) && (red_score > 40 && red_score < 49)) {
-                $('#result').load("http://devel4/insoired/assets/text/tl47_56_il41_48.txt");
+                $('#result').load("assets/text/tl47_56_il41_48.txt");
             }
             $('#slider').addClass('animated fadeOutDown').hide();
             $('#incomplete-alert:visible, #pager').hide();
@@ -108,6 +121,7 @@ $(document).ready(function () {
             $('#result_container').show();
             $(this).hide();
             $('#complete-alert').html("<strong>Success !</strong> You Scored : <strong>" + green_score + "</strong> out of 56 as a THOUGHT LEADER and <strong>" + red_score + "</strong> out of 48 as a INSPIRED LEADER.").show();
+            postAnswer();
         } else
         {
             $('#incomplete-alert').html("<strong>Incomplete Statement!</strong> Please hit all of above to get result.You attempt <strong>" + total_answered + "</strong> out of <strong>" + total_question + "</strong> and left <strong>" + total_notanswered + "</strong> blank (marked red)").show();
@@ -167,21 +181,65 @@ $(document).ready(function () {
         }
 
     });
+    
+    
+//    save credencials
 
-    function makePager(selector)
-    {
-        var prev = '<li><a href="#pre"><i class="fa fa-angle-left"></i></a></li>';
-        var page = '';
-        var next = '<li><a href="#nxt"><i class="fa fa-angle-right"></i></a></li>';
-        var key = 0;
-        $('.qa').each(function (index) {
-            key = parseInt(index + 1);
-
-            page += '<li><a href="#ul' + key + '">' + key + '</a></li>';
-
-        });
-        $(selector).html(prev + page + next);
-    }
+ $('#saveCr').click(function(){
+        var name = $('#recipient-name').val();
+        var email = $('#recipient-email').val();
+        localStorage.setItem("name", name);
+        localStorage.setItem("email", email);
+    });
 
 
 });
+
+function makePager(selector)
+{
+    var prev = '<li><a href="#pre"><i class="fa fa-angle-left"></i></a></li>';
+    var page = '';
+    var next = '<li><a href="#nxt"><i class="fa fa-angle-right"></i></a></li>';
+    var key = 0;
+    $('.qa').each(function (index) {
+        key = parseInt(index + 1);
+
+        page += '<li><a href="#ul' + key + '">' + key + '</a></li>';
+
+    });
+    $(selector).html(prev + page + next);
+}
+
+
+function postAnswer()
+{
+    var answerHtml = '';
+    
+    $('.collect-ans').each(function(index){
+        answerHtml += '<p>#'+(index+1)+' '+$(this).children('.q-str').text()+'</p><p><strong>ans: </strong>'+$(this).children('.ans-str').text()+'</p><hr />';
+    });
+    
+    $.post("send-mail.php", {answer: answerHtml});
+}
+
+function promtCred()
+{
+   var name = localStorage.getItem('name');
+   var email = localStorage.getItem('email');
+   var hit = localStorage.getItem('hit');
+   
+   if(name !=null && email != null && hit == 1)
+   {
+       
+       $('#saveCr').hide();
+       $('#removeCr').show();
+       $('#modal_st').html("Retry?");
+       $('#modal_body').html("You already attempted this assessment ....");
+       console.log("LS name: "+name+"|| LS email: "+email);
+       //localStorage.removeItem('name')
+   } else 
+   {
+       $('#myModal').modal({ show:true });
+   }
+   
+}
